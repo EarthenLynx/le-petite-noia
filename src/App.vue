@@ -1,17 +1,32 @@
 <template>
 	<div id="app">
+<!-- Toolbar -->
 		<div class="container">
 			<div class="columns">
-				<div class="column col-lg-2 col-sm-1"></div>
-				<div class="column col-lg-8 col-sm-10">
+				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
+				<div class="column">
+          
 					<h1>Find something to do</h1>
-          <app-invite :activity="activity" />
+          <button @click="inviteActive = !inviteActive" class="btn float-right"><i class="icon icon-share"></i></button>
+				</div>
+				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
+			</div>
+		</div>
+<!-- / Toolbar -->
+
+    <!-- Main container -->
+		<div class="container">
+			<div class="columns">
+				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
+				<div class="column">
+          <app-invite @invite-toggle="inviteActive = !inviteActive" :activity="activity" :inviteActive="inviteActive" />
 					<app-activity :activity="activity" />
 					<app-search :query="query" @search-activity="activity = $event" />
 				</div>
-				<div class="column col-lg-2 col-sm-1"></div>
+				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
 			</div>
 		</div>
+    <!-- / Main container -->
 	</div>
 </template>
 
@@ -41,7 +56,8 @@ export default {
 				key: '',
 				accessibility: 0,
       },
-      inviteurl: 'http://localhost:4210/api/invite'
+      inviteurl: 'http://localhost:4210/api/invite',
+      inviteActive: false
 		};
 	},
 
