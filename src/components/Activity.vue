@@ -1,41 +1,42 @@
 <template>
-	<div class="card">
-		<div v-if="activity" class="card-body">
-			<h2 class="activity-head">{{ activity.activity }}</h2>
+	<h2 class="activity-head">{{ activity.activity }}</h2>
 
-			<div class="container">
-				<div class="columns">
-					<div class="column col-lg-4 col-sm-12">
-						<div class="activity-element">
-							<p class="activity-participants">
-								Participants:
-							</p>
-							<i
-								v-for="person in activity.participants"
-								:key="person"
-								class="icon icon-people"
-							></i>
-						</div>
-					</div>
+	<div class="container">
+		<div class="columns">
+			<div class="column col-lg-4 col-sm-12">
+				<div class="activity-element">
+					<p class="activity-participants">
+						Participants:
+					</p>
+					<i
+						v-for="person in activity.participants"
+						:key="person"
+						class="icon icon-people"
+					></i>
+				</div>
+			</div>
 
-					<div class="column col-lg-4 col-sm-12">
-						<div class="activity-element">
-							<p class="activity-price">
-								Price:
-							</p>
-							<i v-for="dollar in (Math.round(activity.price) * 10) + 1" :key="dollar">$</i>
-						</div>
-					</div>
+			<div class="column col-lg-4 col-sm-12">
+				<div class="activity-element">
+					<p class="activity-price">
+						Price:
+					</p>
+					<i v-for="dollar in Math.round(activity.price) * 10 + 1" :key="dollar"
+						>$</i
+					>
+				</div>
+			</div>
 
-					<div class="column col-lg-4 col-sm-12">
-						<div class="activity-element">
-							<p class="activity-price">
-								Effort:
-							</p>
-							<i v-for="access in (Math.round(activity.accessibility) * 10) + 1" :key="access" class="icon icon-flag"></i>
-						</div>
-					</div>
-
+			<div class="column col-lg-4 col-sm-12">
+				<div class="activity-element">
+					<p class="activity-price">
+						Effort:
+					</p>
+					<i
+						v-for="access in Math.round(activity.accessibility) * 10 + 1"
+						:key="access"
+						class="icon icon-flag"
+					></i>
 				</div>
 			</div>
 		</div>

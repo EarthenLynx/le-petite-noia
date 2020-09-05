@@ -1,32 +1,44 @@
 <template>
 	<div id="app">
-<!-- Toolbar -->
+		<!-- Main container -->
 		<div class="container">
 			<div class="columns">
-				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
+				<div class="column col-lg-2 col-md-2 col-sm-1"></div>
 				<div class="column">
-          
-					<h1>Find something to do</h1>
-          <button @click="inviteActive = !inviteActive" class="btn float-right"><i class="icon icon-share"></i></button>
+					<div class="card">
+						<div class="card-header">
+							<div class="columns">
+								<div class="column">
+									<h1 class="float-left">Vuetivities</h1>
+								</div>
+								<div class="column-1">
+									<button
+										@click="inviteActive = !inviteActive"
+										class="btn text-right"
+									>
+										<i class="icon icon-share"></i>
+									</button>
+								</div>
+							</div>
+							<div class="card-subtitle text-gray float-left">
+								Find activities and share them with your friends
+							</div>
+						</div>
+						<div v-if="activity" class="card-body">
+							<app-invite
+								@invite-toggle="inviteActive = !inviteActive"
+								:activity="activity"
+								:inviteActive="inviteActive"
+							/>
+							<app-activity :activity="activity" />
+							<app-search :query="query" @search-activity="activity = $event" />
+						</div>
+					</div>
 				</div>
-				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
+				<div class="column col-lg-2 col-md-2 col-sm-1"></div>
 			</div>
 		</div>
-<!-- / Toolbar -->
-
-    <!-- Main container -->
-		<div class="container">
-			<div class="columns">
-				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
-				<div class="column">
-          <app-invite @invite-toggle="inviteActive = !inviteActive" :activity="activity" :inviteActive="inviteActive" />
-					<app-activity :activity="activity" />
-					<app-search :query="query" @search-activity="activity = $event" />
-				</div>
-				<div class="column col-lg-3 col-md-2 col-sm-1"></div>
-			</div>
-		</div>
-    <!-- / Main container -->
+		<!-- Main container -->
 	</div>
 </template>
 
@@ -39,7 +51,7 @@ export default {
 	name: 'App',
 
 	components: {
-    AppInvite,
+		AppInvite,
 		AppSearch,
 		AppActivity,
 	},
@@ -55,9 +67,9 @@ export default {
 				link: '',
 				key: '',
 				accessibility: 0,
-      },
-      inviteurl: 'http://localhost:4210/api/invite',
-      inviteActive: false
+			},
+			inviteurl: 'http://localhost:4210/api/invite',
+			inviteActive: false,
 		};
 	},
 
@@ -74,11 +86,14 @@ export default {
 @import '~spectre.css/dist/spectre.min.css';
 @import '~spectre.css/dist/spectre-icons.min.css';
 
+h1 {
+	font-size: 1.4rem;
+}
+
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
 	color: #2c3e50;
 	margin-top: 40px;
 }

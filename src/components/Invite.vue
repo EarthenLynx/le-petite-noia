@@ -1,12 +1,36 @@
 <template>
 	<div id="invite">
-		<div class="modal" :class="{'active': inviteActive}" id="modal-id">
-			<div @click="$emit('invite-toggle')" class="modal-overlay" aria-label="Close"></div>
+		<div class="modal" :class="{ active: inviteActive }" id="modal-id">
+			<div
+				@click="$emit('invite-toggle')"
+				class="modal-overlay"
+				aria-label="Close"
+			></div>
 			<div class="modal-container">
 				<div class="modal-header">
-          <div @click="$emit('invite-toggle')" class="btn btn-clear float-right" aria-label="Close"></div>
+					<div
+						@click="$emit('invite-toggle')"
+						class="btn btn-clear float-right"
+						aria-label="Close"
+					></div>
 
-					<div class="modal-title h5">Modal title</div>
+					<div class="modal-title h5">Invite your friends per mail</div>
+					<div class="card-subtitle text-gray float-left">
+						You can add emails adress of people you would like to invite to your
+						activity.
+					</div>
+					<div class="email-container">
+						<div v-for="(email, index) in emails" :key="email" class="chip">
+							<img :src="email.hash" class="avatar avatar-sm" />
+							{{ email.adress }}
+							<a
+								@click="emails.splice(index, 1)"
+								class="btn btn-clear"
+								aria-label="Close"
+								role="button"
+							></a>
+						</div>
+					</div>
 				</div>
 				<div class="modal-body">
 					<div class="content">
@@ -29,25 +53,24 @@
 								<i class="icon icon-plus"></i> Add email
 							</button>
 						</div>
-						<label v-if="!validAdress" for="invite"
+						<label v-if="!validAdress" for="invite" class="invalid-mail"
 							>Please enter a valid email adress</label
 						>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<div class="email-container">
-						<div v-for="(email, index) in emails" :key="email" class="chip">
-							<img :src="email.hash" class="avatar avatar-sm" />
-							{{ email.adress }}
-							<a
-								@click="emails.splice(index, 1)"
-								class="btn btn-clear"
-								aria-label="Close"
-								role="button"
-							></a>
+
+						<div class="form-group">
+							<label class="form-label" for="input-example-3"
+								>You can optionally add text here for everybody.</label
+							>
+							<textarea
+								class="form-input"
+								id="input-example-3"
+								placeholder="Textarea"
+								rows="3"
+							></textarea>
 						</div>
 					</div>
 				</div>
+				<div class="modal-footer"></div>
 			</div>
 		</div>
 	</div>
@@ -57,33 +80,36 @@
 import MD5 from 'crypto-js/md5';
 
 export default {
-  name: 'invite',
-  
-  props: {
-    inviteActive: Boolean
-  },
+	name: 'invite',
+
+	props: {
+		inviteActive: Boolean,
+	},
 
 	data() {
 		return {
 			searchtime: 0,
-			validAdress: false,
-			searching: false,
+			validAdress: true,
+			typing: false,
 			email: '',
 			emails: [],
+			emailText: '',
 		};
 	},
 
 	methods: {
 		validateEmail() {
-			this.searching = true;
-			setTimeout(() => {
-				// Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript#46181
-				const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-				this.validAdress = re.test(String(this.email).toLowerCase());
-			}, 1000);
+			// Initiall set the typing active
+			this.typing = true;
 
+			// Check for a valid email adress
+			// Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript#46181
+			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			this.validAdress = re.test(String(this.email).toLowerCase());
+
+			// As soon as the user has hit a valid adress, typing can be turned off
 			if (this.validAdress) {
-				this.searching = false;
+				this.typing = false;
 			}
 		},
 
@@ -93,15 +119,15 @@ export default {
 
 			this.emails.push({ adress, hash });
 			this.email = '';
-			this.validAdress = false;
+			this.validAdress = true;
 		},
 	},
 };
 </script>
 
 <style scoped>
-#invite {
-	margin: 1rem 0;
+.card-subtitle {
+	margin-bottom: 1rem;
 }
 
 .email-container {
@@ -111,5 +137,10 @@ export default {
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
+}
+
+.invalid-mail {
+	color: #e85600;
+	padding: 0.25rem;
 }
 </style>
