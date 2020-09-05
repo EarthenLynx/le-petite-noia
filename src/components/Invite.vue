@@ -32,6 +32,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="modal-body">
 					<div class="content">
 						<div class="input-group">
@@ -46,7 +47,7 @@
 							/>
 							<button
 								:disabled="!validAdress"
-								:class="{ loading: searching }"
+								:class="{ loading: typing }"
 								@click="addEmail()"
 								class="btn btn-primary input-group-btn"
 							>
@@ -70,7 +71,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer"></div>
+				<div class="modal-footer">
+					<button
+								@click="sendEmail()"
+								class="btn btn-primary"
+							>
+								<i class="icon icon-mail"></i> Send invitations
+							</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -137,6 +145,10 @@ export default {
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
+	height: 4rem;
+	overflow-y: auto;
+	background-color: #f2f2f2;
+	border-radius: 0.25rem;
 }
 
 .invalid-mail {

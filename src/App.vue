@@ -9,7 +9,7 @@
 						<div class="card-header">
 							<div class="columns">
 								<div class="column">
-									<h1 class="float-left">Vuetivities</h1>
+									<h1 class="float-left">La grande noia</h1>
 								</div>
 								<div class="column-1">
 									<button
@@ -21,7 +21,7 @@
 								</div>
 							</div>
 							<div class="card-subtitle text-gray float-left">
-								Find activities and share them with your friends
+								Bored? Find activities and invite your friends to them
 							</div>
 						</div>
 						<div v-if="activity" class="card-body">
