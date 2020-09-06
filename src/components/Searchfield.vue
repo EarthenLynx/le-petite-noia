@@ -10,10 +10,12 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  props: {
-    query: String
-  },
+	props: {
+		query: String,
+	},
 
 	data() {
 		return {
@@ -24,12 +26,11 @@ export default {
 	methods: {
 		search() {
 			this.searching = true;
-			fetch(this.query)
-				.then((response) => response.json())
-				.then((activity) => {
-					this.$emit('search-activity', activity);
-					this.searching = false;
-				});
+
+			axios.get(this.query).then((activity) => {
+				this.$emit('search-activity', activity.data);
+				this.searching = false;
+			});
 		},
 	},
 };
