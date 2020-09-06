@@ -6,11 +6,13 @@
 				<div class="column col-lg-2 col-md-2 col-sm-1"></div>
 				<div class="column">
 					<div class="card">
+						<!-- Header section -->
 						<div class="card-header">
 							<div class="columns">
 								<div class="column">
 									<h1 class="float-left">La grande noia</h1>
 								</div>
+								<!-- Share button -->
 								<div class="column-1">
 									<button
 										@click="inviteActive = !inviteActive"
@@ -18,12 +20,16 @@
 									>
 										<i class="icon icon-share"></i>
 									</button>
+									<!-- / Share button -->
 								</div>
 							</div>
 							<div class="card-subtitle text-gray float-left">
 								Bored? Find activities and invite your friends to them
 							</div>
 						</div>
+						<!-- / Header section -->
+
+						<!-- Body -->
 						<div class="card-body">
 							<app-invite
 								@invite-toggle="inviteActive = !inviteActive"
@@ -31,18 +37,27 @@
 								:inviteActive="inviteActive"
 							/>
 							<app-activity :activity="activity" />
-							<app-search :query="query" @search-activity="activity = $event" />
+							<app-search
+								:query="baseurl"
+								@search-activity="activity = $event"
+							/>
 						</div>
+						<!-- / Body -->
 					</div>
+					<small
+						>Built on top of
+						<a href="https://www.boredapi.com/">Bored API</a></small
+					>
 				</div>
 				<div class="column col-lg-2 col-md-2 col-sm-1"></div>
 			</div>
 		</div>
-		<!-- Main container -->
+		<!-- / Main container -->
 	</div>
 </template>
 
 <script>
+// Import the necessary components
 import AppInvite from '@/components/Invite.vue';
 import AppSearch from '@/components/Searchfield.vue';
 import AppActivity from '@/components/Activity.vue';
@@ -71,13 +86,6 @@ export default {
 			inviteurl: 'http://localhost:4210/api/invite',
 			inviteActive: false,
 		};
-	},
-
-	computed: {
-		query() {
-			let query = this.baseurl;
-			return query;
-		},
 	},
 };
 </script>

@@ -1,8 +1,12 @@
 <template>
 	<div id="invite">
+		<!-- Interactive Toast -->
 		<transition name="toast-fade">
 			<Toast v-if="showToast" :msg="msgToast" />
 		</transition>
+		<!-- / Interactive Toast -->
+
+		<!-- Modal Element -->
 		<div class="modal" :class="{ active: inviteActive }" id="modal-id">
 			<div
 				@click="$emit('invite-toggle')"
@@ -10,6 +14,7 @@
 				aria-label="Close"
 			></div>
 			<div class="modal-container">
+				<!-- Modal Header -->
 				<div class="modal-header">
 					<div
 						@click="$emit('invite-toggle')"
@@ -24,8 +29,8 @@
 					</div>
 					<div class="email-container">
 						<div
-							v-for="(email, index) in emailAdresses"
 							:key="email"
+							v-for="(email, index) in emailAdresses"
 							class="chip"
 						>
 							<img :src="email.hash" class="avatar avatar-sm" />
@@ -39,22 +44,24 @@
 						</div>
 					</div>
 				</div>
+				<!-- / Modal header -->
 
+				<!-- Modal Body -->
 				<div class="modal-body">
 					<div class="content">
 						<div class="input-group">
 							<input
-								name="invite"
 								@keyup="validateEmail"
 								@blur="searching = false"
+								:class="{ 'is-error': !validAdress }"
+								name="invite"
 								type="text"
 								class="form-input"
-								:class="{ 'is-error': !validAdress }"
 								v-model="emailActive"
 							/>
 							<button
-								:disabled="!validAdress"
 								@click="addEmail()"
+								:disabled="!validAdress"
 								class="btn btn-primary input-group-btn"
 							>
 								<i class="icon icon-plus"></i> Add email
@@ -70,32 +77,38 @@
 							>
 							<textarea
 								v-model="emailText"
-								class="form-input"
 								id="input-example-3"
-								placeholder="Textarea"
+								class="form-input"
+								placeholder="Write a message to your fellows to join up"
 								rows="3"
 							></textarea>
 						</div>
 					</div>
 				</div>
+				<!-- / Modal body -->
+
+				<!-- Modal footer -->
 				<div class="modal-footer">
 					<button
+						@click="sendInvites()"
 						:disabled="sending"
 						:class="{ loading: sending }"
-						@click="sendInvites()"
 						class="btn btn-primary"
 					>
 						<i class="icon icon-mail"></i> Send invitations
 					</button>
 				</div>
+				<!-- / Modal footer -->
 			</div>
 		</div>
+		<!-- / Modal element -->
 	</div>
 </template>
 
 <script>
 import MD5 from 'crypto-js/md5';
 import axios from 'axios';
+
 import Toast from '@/fragments/Toast';
 
 export default {
@@ -113,38 +126,28 @@ export default {
 	data() {
 		return {
 			showToast: false,
-			msgToast: 'I am a toast',
-			searchtime: 0,
 			validAdress: true,
-			typing: false,
 			sending: false,
-			emailActive: '',
+			searchtime: 0,
 			emailAdresses: [],
-			emailText: 'asd',
+			emailActive: '',
+			emailText: '',
+			msgToast: '',
 		};
 	},
 
 	methods: {
 		validateEmail() {
-			// Initiall set the typing active
-			this.typing = true;
-
 			// Check for a valid email adress
 			// Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript#46181
 			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			this.validAdress = re.test(String(this.emailActive).toLowerCase());
-
-			// As soon as the user has hit a valid adress, typing can be turned off
-			if (this.validAdress) {
-				this.typing = false;
-			}
 		},
 
 		addEmail() {
 			const adress = this.emailActive;
 			const hash =
 				'https://api.adorable.io/avatars/40/' + MD5(adress).toString();
-
 			this.emailAdresses.push({ adress, hash });
 			this.emailActive = '';
 			this.validAdress = true;
@@ -154,7 +157,7 @@ export default {
 			// Set sending prop to true
 			this.sending = true;
 
-			const url = 'http://localhost:3000/sendmail';
+			const url = 'http://localhost:4210/sendmail';
 
 			const payload = {
 				emailAdresses: this.emailAdresses,
@@ -163,7 +166,10 @@ export default {
 			};
 
 			axios
+				// Send the adresses & content to the server
 				.post(url, payload)
+
+				// Receive a response and change the interactive DOM elements
 				.then((res) => {
 					this.showToast = true;
 					this.sending = false;
@@ -173,10 +179,13 @@ export default {
 						this.showToast = false;
 					}, 2500);
 				})
+
+				// If something goes wrong, notify the user
 				.catch(() => {
 					this.showToast = true;
 					this.sending = false;
-					this.msgToast = 'Something went wrong while fetching, please try again';
+					this.msgToast =
+						'Something went wrong while fetching, please try again';
 					setTimeout(() => {
 						this.showToast = false;
 					}, 2500);
@@ -211,8 +220,8 @@ export default {
 
 /* Styles for the toast transitions */
 .toast-fade-enter {
-  transform: translateX(-100px);
-  opacity: 0;
+	transform: translateX(-100px);
+	opacity: 0;
 }
 
 .toast-fade-enter-active {
@@ -220,8 +229,8 @@ export default {
 }
 
 .toast-fade-leave-active {
-  transform: translateX(100px);
-  transition: all 1s;
-  opacity: 0;
+	transform: translateX(100px);
+	transition: all 1s;
+	opacity: 0;
 }
 </style>

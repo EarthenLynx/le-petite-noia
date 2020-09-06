@@ -27,6 +27,7 @@ export default {
 		search() {
 			this.searching = true;
 
+			// Get an activity from the API and emit it to the parent element
 			axios.get(this.query).then((activity) => {
 				this.$emit('search-activity', activity.data);
 				this.searching = false;
