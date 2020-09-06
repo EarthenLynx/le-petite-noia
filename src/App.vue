@@ -24,7 +24,7 @@
 								Bored? Find activities and invite your friends to them
 							</div>
 						</div>
-						<div v-if="activity" class="card-body">
+						<div class="card-body">
 							<app-invite
 								@invite-toggle="inviteActive = !inviteActive"
 								:activity="activity"
@@ -58,7 +58,6 @@ export default {
 
 	data() {
 		return {
-			baseurl: 'https://www.boredapi.com/api/activity',
 			activity: {
 				activity: '',
 				type: '',
@@ -68,6 +67,7 @@ export default {
 				key: '',
 				accessibility: 0,
 			},
+			baseurl: 'https://www.boredapi.com/api/activity',
 			inviteurl: 'http://localhost:4210/api/invite',
 			inviteActive: false,
 		};
