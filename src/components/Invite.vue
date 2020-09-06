@@ -1,5 +1,8 @@
 <template>
 	<div id="invite">
+		<transition name="toast-fade">
+			<Toast v-if="showToast" :msg="msgToast" />
+		</transition>
 		<div class="modal" :class="{ active: inviteActive }" id="modal-id">
 			<div
 				@click="$emit('invite-toggle')"
@@ -16,15 +19,19 @@
 
 					<div class="modal-title h5">Invite your friends per mail</div>
 					<div class="card-subtitle text-gray float-left">
-						You can add emails adress of people you would like to invite to your
-						activity.
+						You can add emailAdresses adress of people you would like to invite
+						to your activity.
 					</div>
 					<div class="email-container">
-						<div v-for="(email, index) in emails" :key="email" class="chip">
+						<div
+							v-for="(email, index) in emailAdresses"
+							:key="email"
+							class="chip"
+						>
 							<img :src="email.hash" class="avatar avatar-sm" />
 							{{ email.adress }}
 							<a
-								@click="emails.splice(index, 1)"
+								@click="emailAdresses.splice(index, 1)"
 								class="btn btn-clear"
 								aria-label="Close"
 								role="button"
@@ -43,11 +50,10 @@
 								type="text"
 								class="form-input"
 								:class="{ 'is-error': !validAdress }"
-								v-model="email"
+								v-model="emailActive"
 							/>
 							<button
 								:disabled="!validAdress"
-								:class="{ loading: typing }"
 								@click="addEmail()"
 								class="btn btn-primary input-group-btn"
 							>
@@ -63,6 +69,7 @@
 								>You can optionally add text here for everybody.</label
 							>
 							<textarea
+								v-model="emailText"
 								class="form-input"
 								id="input-example-3"
 								placeholder="Textarea"
@@ -73,11 +80,13 @@
 				</div>
 				<div class="modal-footer">
 					<button
-								@click="sendEmail()"
-								class="btn btn-primary"
-							>
-								<i class="icon icon-mail"></i> Send invitations
-							</button>
+						:disabled="sending"
+						:class="{ loading: sending }"
+						@click="sendInvites()"
+						class="btn btn-primary"
+					>
+						<i class="icon icon-mail"></i> Send invitations
+					</button>
 				</div>
 			</div>
 		</div>
@@ -86,22 +95,32 @@
 
 <script>
 import MD5 from 'crypto-js/md5';
+import axios from 'axios';
+import Toast from '@/fragments/Toast';
 
 export default {
 	name: 'invite',
 
+	components: {
+		Toast,
+	},
+
 	props: {
 		inviteActive: Boolean,
+		activity: Object,
 	},
 
 	data() {
 		return {
+			showToast: false,
+			msgToast: 'I am a toast',
 			searchtime: 0,
 			validAdress: true,
 			typing: false,
-			email: '',
-			emails: [],
-			emailText: '',
+			sending: false,
+			emailActive: '',
+			emailAdresses: [],
+			emailText: 'asd',
 		};
 	},
 
@@ -113,7 +132,7 @@ export default {
 			// Check for a valid email adress
 			// Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript#46181
 			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-			this.validAdress = re.test(String(this.email).toLowerCase());
+			this.validAdress = re.test(String(this.emailActive).toLowerCase());
 
 			// As soon as the user has hit a valid adress, typing can be turned off
 			if (this.validAdress) {
@@ -122,12 +141,46 @@ export default {
 		},
 
 		addEmail() {
-			let adress = this.email;
-			let hash = 'https://api.adorable.io/avatars/40/' + MD5(adress).toString();
+			const adress = this.emailActive;
+			const hash =
+				'https://api.adorable.io/avatars/40/' + MD5(adress).toString();
 
-			this.emails.push({ adress, hash });
-			this.email = '';
+			this.emailAdresses.push({ adress, hash });
+			this.emailActive = '';
 			this.validAdress = true;
+		},
+
+		sendInvites() {
+			// Set sending prop to true
+			this.sending = true;
+
+			const url = 'http://localhost:3000/sendmail';
+
+			const payload = {
+				emailAdresses: this.emailAdresses,
+				activity: this.activity,
+				emailText: this.emailText,
+			};
+
+			axios
+				.post(url, payload)
+				.then((res) => {
+					this.showToast = true;
+					this.sending = false;
+					this.msgToast = res.data.msg;
+					this.$emit('invite-toggle');
+					setTimeout(() => {
+						this.showToast = false;
+					}, 2500);
+				})
+				.catch(() => {
+					this.showToast = true;
+					this.sending = false;
+					this.msgToast = 'Something went wrong while fetching, please try again';
+					setTimeout(() => {
+						this.showToast = false;
+					}, 2500);
+				});
 		},
 	},
 };
@@ -154,5 +207,21 @@ export default {
 .invalid-mail {
 	color: #e85600;
 	padding: 0.25rem;
+}
+
+/* Styles for the toast transitions */
+.toast-fade-enter {
+  transform: translateX(-100px);
+  opacity: 0;
+}
+
+.toast-fade-enter-active {
+	transition: all 1s;
+}
+
+.toast-fade-leave-active {
+  transform: translateX(100px);
+  transition: all 1s;
+  opacity: 0;
 }
 </style>
