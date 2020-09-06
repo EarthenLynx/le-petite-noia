@@ -1,7 +1,6 @@
 <template>
-	<h2 class="activity-head text-center">{{ activity.activity }}</h2>
-
 	<div class="container">
+		<h2 class="activity-head text-center">{{ activity.activity }}</h2>
 		<div class="columns">
 			<div class="column col-lg-6 col-sm-12">
 				<div class="activity-element">
@@ -61,7 +60,6 @@ h2 {
 	font-size: 1rem;
 	background-color: #f2f2f2;
 	padding: 1rem;
-	
 	border-radius: 0.25rem;
 }
 
@@ -84,7 +82,6 @@ progress.progress {
 	flex-wrap: wrap;
 	flex-direction: row;
 }
-
 
 .activity-element {
 	min-height: 2rem;
