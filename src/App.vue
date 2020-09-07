@@ -1,5 +1,22 @@
 <template>
 	<div id="app">
+		<img
+			@mouseenter="bubbleActive = true"
+			@mouseleave="bubbleActive = false"
+			:src="AppLogo"
+			alt="application logo shows a purple, pretty bored octopus"
+			class="app-image"
+		/>
+
+		<transition name="bubble-fade">
+			<img
+				:src="AppBubble"
+				v-if="bubbleActive"
+				alt="bubble shows the pretty bored octopus saying meh"
+				class="app-bubble"
+			/>
+		</transition>
+
 		<!-- Main container -->
 		<div class="container">
 			<div class="columns">
@@ -61,6 +78,8 @@
 import AppInvite from '@/components/Invite.vue';
 import AppSearch from '@/components/Searchfield.vue';
 import AppActivity from '@/components/Activity.vue';
+import AppLogo from '@/assets/logo.png';
+import AppBubble from '@/assets/bubble.png';
 
 export default {
 	name: 'App',
@@ -73,6 +92,8 @@ export default {
 
 	data() {
 		return {
+			AppLogo,
+			AppBubble,
 			activity: {
 				activity: '',
 				type: '',
@@ -85,6 +106,7 @@ export default {
 			baseurl: 'https://www.boredapi.com/api/activity',
 			inviteurl: 'http://localhost:4210/api/invite',
 			inviteActive: false,
+			bubbleActive: false,
 		};
 	},
 };
@@ -103,6 +125,47 @@ h1 {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	color: #2c3e50;
-	margin-top: 40px;
+}
+
+.app-image {
+	display: block;
+	margin: 0.25rem auto 0.5rem;
+	cursor: pointer;
+}
+
+.app-bubble {
+	position: absolute;
+	top: 0;
+	left: 39vw;
+}
+
+@media (max-width: 576px) {
+	.app-image {
+		height: 80px;
+		width: 80px;
+	}
+
+	.app-bubble {
+		display: none;
+	}
+}
+
+@media (max-width: 992px) {
+	.app-bubble {
+		left: 34vw;
+	}
+}
+
+@media (max-width: 768px) {
+	.app-bubble {
+		left: 30vw;
+	}
+}
+
+/* Styles for the animations */
+.bubble-fade-leave-active {
+	transition: all 1s;
+	transform: translateY(20px);
+	opacity: 0;
 }
 </style>
